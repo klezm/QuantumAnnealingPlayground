@@ -24,6 +24,7 @@ jobs:
 
       - name: ipynb => html
         run: |
+          pip install nbconvert
           # jupyter nbconvert --to html --embed-images **/*.ipynb
           jupyter nbconvert --to html **/*.ipynb
 
