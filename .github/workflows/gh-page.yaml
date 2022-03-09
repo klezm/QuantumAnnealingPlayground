@@ -22,12 +22,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+
       - name: ipynb => html
         run: |
           pip install nbconvert
           # jupyter nbconvert --to html --embed-images **/*.ipynb
           jupyter nbconvert --to html **/*.ipynb
-
 
 
       - name: Add links to all HTMLs and Markdowns to repo README.md
@@ -42,15 +42,11 @@ jobs:
 
           with open(pages_root.joinpath("README.md"), "a+") as f:
           # with open(readme, "a+") as f:
-              # f.write("\n\n# PhysioNet Data Challenge\n\n")
               f.write("\n## Sitemap Markdowns\n\n")
               mds = sorted([p.relative_to(pages_root).as_posix() for p in pages_root.glob("**/*.md")])
               for link in (f'- [{p}]({p})\n' for p in mds):
                   f.write(link)
               f.write("\n## Sitemap HTMLs\n\n")
-              # htmls = sorted([p.relative_to(pages_root).as_posix() for p in pages_root.glob("**/*.html")])
-              # for link in (f'- [{p}]({p})\n' for p in htmls):
-              #     f.write(link)
               htmls = [p for p in pages_root.glob("**/*.html")]
               htmls = sorted(htmls + list(set([x.parent for x in htmls])))
               base_dir = ""
@@ -59,7 +55,11 @@ jobs:
                       base_dir = link
                       f.write(f'- {link.relative_to(pages_root).as_posix()}\n')
                   else:
-                      f.write(f'\t- [{link.relative_to(base_dir).stem}]({link.relative_to(pages_root)})\n')
+                      link_text = link.relative_to(base_dir).stem
+                      for p in link.parent.glob("*"):
+                          if link.stem == p.stem:
+                              link_text = p.relative_to(base_dir).name
+                      f.write(f'\t- [{link_text}]({link.relative_to(pages_root)})\n')
 
 
       - name: Deploy to GitHub Pages
