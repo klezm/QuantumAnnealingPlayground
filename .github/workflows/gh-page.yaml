@@ -57,7 +57,7 @@ jobs:
                   else:
                       link_text = link.relative_to(base_dir).stem
                       for p in link.parent.glob("*"):
-                          if link.stem == p.stem:
+                          if link.stem == p.stem and link.suffix != p.suffix:
                               link_text = p.relative_to(base_dir).name
                       f.write(f'\t- [{link_text}]({link.relative_to(pages_root)})\n')
 
