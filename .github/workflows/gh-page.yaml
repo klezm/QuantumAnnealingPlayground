@@ -25,13 +25,13 @@ jobs:
 
       - name: ipynb => html
         run: |
-          pip install nbconvert jupyter_contrib_nbextensions
+          pip install "nbconvert<6" jupyter_contrib_nbextensions
           # jupyter contrib nbextension install --user
           # jupyter nbextension enable codefolding/main
           # # nbconvert templates: https://stackoverflow.com/a/24067557/9058671
           # jupyter nbconvert --to html --embed-images **/*.ipynb
           # jupyter nbconvert --to html **/*.ipynb
-          jupyter nbconvert --to html_ch **/*.ipynb # https://stackoverflow.com/a/69522338/9058671
+          jupyter nbconvert --to html_ch --EmbedImagesPreprocessor.embed_remote_images=True **/*.ipynb # https://stackoverflow.com/a/69522338/9058671
 
 
       - name: Add links to all HTMLs and Markdowns to repo README.md
