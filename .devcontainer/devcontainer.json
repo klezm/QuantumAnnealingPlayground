@@ -6,6 +6,7 @@
 	"image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		// act -s GITHUB_TOKEN="$GITHUB_TOKEN"
 		"ghcr.io/devcontainers-contrib/features/act:1": {}
 		// "ghcr.io/devcontainers-contrib/features/act-asdf:2": {}
 	}
