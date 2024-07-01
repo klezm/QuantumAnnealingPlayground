@@ -16,7 +16,7 @@
 ## Sitemap HTMLs
 
 - choosing_boxes_problem
-	- [choosing_boxes.ipynb](choosing_boxes_problem/choosing_boxes.html)
+	- [choosing_boxes](choosing_boxes_problem/choosing_boxes.html)
 - choosing_boxes_problem/results
 	- [choosing-boxes-2-eigenspectrums-dt50](choosing_boxes_problem/results/choosing-boxes-2-eigenspectrums-dt50.html)
 	- [choosing-boxes-2-eigenvectors-dt50](choosing_boxes_problem/results/choosing-boxes-2-eigenvectors-dt50.html)
@@ -66,4 +66,4 @@
 	- [eigenvectors-dt200](choosing_boxes_problem/results/eigenvectors-dt200.html)
 	- [eigenvectors](choosing_boxes_problem/results/eigenvectors.html)
 - playground
-	- [SudoQ.ipynb](playground/SudoQ.html)
+	- [SudoQ](playground/SudoQ.html)
