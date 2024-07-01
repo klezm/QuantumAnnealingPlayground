@@ -15,6 +15,8 @@
 
 ## Sitemap HTMLs
 
+- .
+	- [playground](playground.html)
 - choosing_boxes_problem
 	- [choosing_boxes](choosing_boxes_problem/choosing_boxes.html)
 - choosing_boxes_problem/results
