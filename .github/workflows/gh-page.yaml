@@ -4,6 +4,8 @@
 # jupyter nbconvert --to html --embed-images notebook.ipynb
 # jupyter nbconvert --to markdown notebook.ipynb
 
+# act -s GITHUB_TOKEN="$GITHUB_TOKEN"
+
 name: GH Pages
 
 on:
@@ -26,13 +28,32 @@ jobs:
 
       - name: ipynb => html
         run: |
-          pip install "nbconvert<6" jupyter_contrib_nbextensions
+          # apt update && apt install -y pandoc
+          apt update && apt install -y rsync
+          # pip install -U pip
+          # pip install -U jupyterlab
+          # pip install "nbconvert<6" jupyter_contrib_nbextensions
+          # pip install -U "nbconvert<6" jupyter_contrib_nbextensions jinja2
+          # pip install -U nbconvert jupyter_contrib_nbextensions notebook jupyter
+          # pip install -U nbconvert jupyter_contrib_nbextensions jinja2
+          # sudo -E pip install -U nbconvert jupyter_contrib_nbextensions
+          # pip install -U nbconvert https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tarball/master
+          pip install -U nbconvert # jupyterlab
+          # pip install jupyter_contrib_nbextensions "nbconvert==6.4.4" "jinja2==3.0.3"
+          echo "+++----------------------------------+++"
+          python -V
+          pip -V
+          # jupyter nbconvert --help
+          # jupyter contrib nbextension install --user
+          echo "----------------------------------"
+          # jupyter nbextension install --user
           # jupyter contrib nbextension install --user
           # jupyter nbextension enable codefolding/main
           # # nbconvert templates: https://stackoverflow.com/a/24067557/9058671
           # jupyter nbconvert --to html --embed-images **/*.ipynb
           # jupyter nbconvert --to html **/*.ipynb
-          jupyter nbconvert --to html_ch --EmbedImagesPreprocessor.embed_remote_images=True **/*.ipynb # https://stackoverflow.com/a/69522338/9058671
+          # jupyter nbconvert --to html_ch --EmbedImagesPreprocessor.embed_remote_images=True **/*.ipynb # https://stackoverflow.com/a/69522338/9058671
+          jupyter nbconvert --to html --EmbedImagesPreprocessor.embed_remote_images=True **/*.ipynb
 
 
       - name: Add links to all HTMLs and Markdowns to repo README.md
@@ -42,7 +63,7 @@ jobs:
           from pathlib import Path
 
           def get_markdown_files(root_dir):
-              return sorted([p.relative_to(root_dir).as_posix() for p in root_dir.glob("**/*.md")])
+              return sorted([p.relative_to(root_dir) for p in root_dir.glob("**/*.md")])
 
           def get_html_files_and_dirs(pages_root):
               html_files = list(pages_root.glob("**/*.html"))
@@ -57,18 +78,39 @@ jobs:
           def make_md_link(url, text=None, list=False, indent=0):
               return ("\t" * indent) + ("- " if (list | indent) else "") + f"[{text or url}]({url})"
 
-          def make_md_link_list(urls, level=0, remove_suffix=""):
+          def make_md_link_list(urls, level=0, root=Path("."), remove_suffix="", orig_suffix=False):
+              links = []
+              for url in urls:
+                  text = None
+                  if remove_suffix:
+                      text = url.name.removesuffix(remove_suffix)
+                  if orig_suffix:
+                      for p in url.parent.glob(f'{url.stem}.*'):
+                          if url.suffix != p.suffix:
+                            text = p.name  # p.relative_to(base_dir).name
+                  links.append(make_md_link(url.relative_to(root), text=text, list=True, indent=level))
+              return "\n".join(links)
               return "\n".join(make_md_link(
                   url,
                   text=None if not remove_suffix else url.name.removesuffix(remove_suffix),
                   list=True,
                   indent=level) for url in urls)
 
+          def _generate_md_file_tree(dirs, pages_root=Path("."), remove_suffix=".html"):
+              links = []
+              for item in sorted(dirs):
+                  if item.is_dir():
+                      links.append(f'- {item.relative_to(pages_root).as_posix()}')
+                  else:
+                      link_text = item.relative_to(item.parent).name.removesuffix(remove_suffix)
+                      links.append(make_md_link(item.relative_to(pages_root), link_text, indent=1))
+              return "\n".join(links)
+
           def generate_md_file_tree(dirs, pages_root=Path("."), remove_suffix=".html"):
               links = []
               for parent, files in dirs:
                   links.append(f'- {parent.relative_to(pages_root).as_posix()}')
-                  links.append(make_md_link_list(files, level=1, remove_suffix=remove_suffix))
+                  links.append(make_md_link_list(files, level=1, root=pages_root, remove_suffix=remove_suffix, orig_suffix=True))
               return "\n".join(links)
 
           def update_readme_with_links(root_dir):
@@ -80,6 +122,11 @@ jobs:
                   f.write(make_md_link_list(md_files))
                   f.write("\n\n## Sitemap HTMLs\n\n")
                   f.write(generate_md_file_tree(html_items, pages_root=root_dir))
+              # md = "\n## Sitemap Markdowns\n\n"
+              # md += make_md_link_list(md_files)
+              # md += "\n\n## Sitemap HTMLs\n\n"
+              # md += generate_md_file_tree(html_items, pages_root=root_dir)
+              # return md
 
           def insert_toc_in_readmes(root_dir):
               for readme in root_dir.glob("**/README.md"):
@@ -87,6 +134,9 @@ jobs:
                   # display(Markdown(update_readme_with_links(readme.parent)))
 
           pages_root = Path(".")
+          # update_readme_with_links(pages_root)
+          # from IPython.display import Markdown, HTML
+          # display(Markdown(update_readme_with_links(pages_root)))
           insert_toc_in_readmes(pages_root)
 
 
