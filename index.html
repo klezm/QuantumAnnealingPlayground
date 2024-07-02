@@ -1,0 +1,604 @@
+<h1 id="images-for-frontpage">Images for frontpage</h1>
+<p>This contain images for the frontpage of nbviewer.</p>
+<p>at most thoses images will be show with a size of 360x225 (W x H), aspect ratio (W/H) of 1.6. As they might be show on retina display, consider using a double resolution. Resizing will be handled by browser, so to avoid artifact images shoudl be of size multiple of maximum size ie (720 width) by (450 height), preferentially in png, and passed to png crusher as the number of request for thoses images will be heigh.</p>
+<p><strong><a href="#quick-run">Quick Run</a></strong> | <strong><a href="#github-enterprise">GitHub Enterprise</a></strong> | <strong><a href="#base-url">Base URL</a></strong> | <strong><a href="#local-development">Local Development</a></strong> | <strong><a href="#contributing">Contributing</a></strong> | <strong><a href="#extending-the-notebook-viewer">Extensions</a></strong> | <strong><a href="#config-file-and-command-line-configuration">Configuration</a></strong> | <strong><a href="#securing-the-notebook-viewer">Security</a></strong></p>
+<h1 id="jupyter-notebook-viewer">Jupyter Notebook Viewer</h1>
+<p><a href="https://pypi.python.org/pypi/nbviewer"><img src="https://img.shields.io/pypi/v/nbviewer?logo=pypi" alt="Latest PyPI version" /></a> <a href="https://travis-ci.org/jupyter/nbviewer"><img src="https://img.shields.io/travis/jupyter/nbviewer/master?logo=travis" alt="TravisCI build status" /></a> <a href="https://github.com/jupyter/nbviewer/issues"><img src="https://img.shields.io/badge/issue_tracking-github-blue?logo=github" alt="GitHub" /></a> <a href="https://gitter.im/jupyter/nbviewer"><img src="https://img.shields.io/badge/social_chat-gitter-blue?logo=gitter" alt="Gitter" /></a></p>
+<p>Jupyter NBViewer is the web application behind <a href="http://nbviewer.org">The Jupyter Notebook Viewer</a>, which is graciously hosted by <a href="https://ovhcloud.com">OVHcloud</a> and CDN services provided by <a href="https://www.fastly.com/">fastly</a>.</p>
+<p>Run this locally to get most of the features of nbviewer on your own network.</p>
+<p>If you need help using or installing Jupyter Notebook Viewer, please use the <a href="https://github.com/jupyter/help">jupyter/help</a> issue tracker. If you would like to propose an enhancement to nbviewer or file a bug report, please <a href="https://github.com/jupyter/nbviewer">open an issue here, in the jupyter/nbviewer project</a>.</p>
+<h2 id="quick-run">Quick Run</h2>
+<p>If you have <code>docker</code> installed, you can pull and run the currently built version of the Docker container by</p>
+<pre class="shell"><code>docker pull jupyter/nbviewer
+docker run -p 8080:8080 jupyter/nbviewer</code></pre>
+<p>It automatically gets built with each push to <code>master</code>, so you’ll always be able to get the freshest copy.</p>
+<p>For speed and friendliness to GitHub, be sure to set <code>GITHUB_OAUTH_KEY</code> and <code>GITHUB_OAUTH_SECRET</code>:</p>
+<pre class="shell"><code>docker run -p 8080:8080 -e &#39;GITHUB_OAUTH_KEY=YOURKEY&#39; \
+                          -e &#39;GITHUB_OAUTH_SECRET=YOURSECRET&#39; \
+                          jupyter/nbviewer</code></pre>
+<p>Or to use your GitHub personal access token, you can just set <code>GITHUB_API_TOKEN</code>.</p>
+<h2 id="github-enterprise">GitHub Enterprise</h2>
+<p>To use nbviewer on your own GitHub Enterprise instance you need to set <code>GITHUB_API_URL</code>. The relevant <a href="https://developer.github.com/v3/enterprise/">API endpoints for GitHub Enterprise</a> are prefixed with <code>http://hostname/api/v3</code>. You must also specify your <code>OAUTH</code> or <code>API_TOKEN</code> as explained above. For example:</p>
+<pre class="shell"><code>docker run -p 8080:8080 -e &#39;GITHUB_OAUTH_KEY=YOURKEY&#39; \
+                          -e &#39;GITHUB_OAUTH_SECRET=YOURSECRET&#39; \
+                          -e &#39;GITHUB_API_URL=https://ghe.example.com/api/v3/&#39; \
+                          jupyter/nbviewer</code></pre>
+<p>With this configured all GitHub API requests will go to your Enterprise instance so you can view all of your internal notebooks.</p>
+<h2 id="base-url">Base URL</h2>
+<p>If the environment variable <code>JUPYTERHUB_SERVICE_PREFIX</code> is specified, then NBViewer <em>always</em> uses the value of this environment variable as the base URL.</p>
+<p>In the case that there is no value for <code>JUPYTERHUB_SERVICE_PREFIX</code>, then as a backup the value of the <code>--base-url</code> flag passed to the <code>python -m nbviewer</code> command on the command line will be used as the base URL.</p>
+<h2 id="local-development">Local Development</h2>
+<h3 id="with-docker">With Docker</h3>
+<p>You can build a docker image that uses your local branch.</p>
+<h4 id="build">Build</h4>
+<pre class="shell"><code>cd &lt;path to repo&gt;
+docker build -t nbviewer .</code></pre>
+<h4 id="run">Run</h4>
+<pre class="shell"><code>cd &lt;path to repo&gt;
+docker run -p 8080:8080 nbviewer</code></pre>
+<h3 id="with-docker-compose">With Docker Compose</h3>
+<p>The Notebook Viewer uses <code>memcached</code> in production. To locally try out this setup, a <a href="https://docs.docker.com/compose/">docker-compose</a> configuration is provided to easily start/stop the <code>nbviewer</code> and <code>memcached</code> containers together from your current branch. You will need to install <code>docker</code> prior to this.</p>
+<h4 id="run-1">Run</h4>
+<pre class="shell"><code>cd &lt;path to repo&gt;
+pip install docker-compose
+docker-compose up</code></pre>
+<h3 id="local-installation">Local Installation</h3>
+<p>The Notebook Viewer requires several binary packages to be installed on your system. The primary ones are <code>libmemcached-dev libcurl4-openssl-dev pandoc libevent-dev libgnutls28-dev</code>. Package names may differ on your system, see <a href="https://github.com/rgbkrk/salt-states-nbviewer/blob/master/nbviewer/init.sls">salt-states</a> for more details.</p>
+<p>If they are installed, you can install the required Python packages via pip.</p>
+<pre class="shell"><code>$ cd &lt;path to repo&gt;
+$ pip install -r requirements.txt</code></pre>
+<h4 id="static-assets">Static Assets</h4>
+<p>Static assets are maintained with <code>bower</code> and <code>less</code> (which require having <code>npm</code> installed), and the <code>invoke</code> python module.</p>
+<pre class="shell"><code>$ cd &lt;path to repo&gt;
+$ pip install -r requirements-dev.txt
+$ npm install
+$ invoke bower
+$ invoke less [-d]</code></pre>
+<p>This will download the relevant assets into <code>nbviewer/static/components</code> and create the built assets in <code>nbviewer/static/build</code>.</p>
+<p>Pass <code>-d</code> or <code>--debug</code> to <code>invoke less</code> to create a CSS sourcemap, useful for debugging.</p>
+<h4 id="running-locally">Running Locally</h4>
+<pre class="shell"><code>$ cd &lt;path to repo&gt;
+$ python -m nbviewer --debug --no-cache --host=127.0.0.1</code></pre>
+<p>This will automatically relaunch the server if a change is detected on a python file, and not cache any results. You can then just do the modifications you like to the source code and/or the templates then refresh the pages.</p>
+<h2 id="contributing">Contributing</h2>
+<p>If you would like to contribute to the project, please read the <a href="CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a>. The <code>CONTRIBUTING.md</code> file explains how to set up a development installation and how to run the test suite.</p>
+<h2 id="extending-the-notebook-viewer">Extending the Notebook Viewer</h2>
+<h3 id="providers">Providers</h3>
+<p>Providers are sources of notebooks and directories of notebooks and directories.</p>
+<p><code>nbviewer</code> ships with several providers - <code>url</code> - <code>gist</code> - <code>github</code> - <code>huggingface</code> - <code>local</code></p>
+<h4 id="writing-a-new-provider">Writing a new Provider</h4>
+<p>There are already several providers <a href="https://github.com/jupyter/nbviewer/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+is%3Aopen+label%3Atag%3AProvider">proposed/requested</a>. Some providers are more involved than others, and some, such as those which would require user authentication, will take some work to support properly.</p>
+<p>A provider is implemented as a python module, which can expose a few functions:</p>
+<h5 id="uri_rewrites"><code>uri_rewrites</code></h5>
+<p>If you just need to rewrite URLs (or URIs) of another site/namespace, implement <code>uri_rewrites</code>, which will allow the front page to transform an arbitrary string (usually an URI fragment), escape it correctly, and turn it into a “canonical” nbviewer URL. See the <a href="./nbviewer/providers/dropbox/handlers.py">dropbox provider</a> for a simple example of rewriting URLs without using a custom API client.</p>
+<h5 id="default_handlers"><code>default_handlers</code></h5>
+<p>If you need custom logic, such as connecting to an API, implement <code>default_handlers</code>. See the <a href="./nbviewer/providers/github/handlers.py">github provider</a> for a complex example of providing multiple handlers.</p>
+<h5 id="error-handling">Error Handling</h5>
+<p>While you <em>could</em> re-implement upstream HTTP error handling, a small convenience method is provided for intercepting HTTP errors. On a given URL handler that inherits from <code>BaseHandler</code>, overload the <code>client_error_message</code> and re-call it with your message (or <code>None</code>). See the <a href="./nbviewer/providers/gist/handlers.py">gist provider</a> for an example of customizing the error message.</p>
+<h3 id="formats">Formats</h3>
+<p>Formats are ways to present notebooks to the user.</p>
+<p><code>nbviewer</code> ships with three providers: - <code>html</code> - <code>slides</code> - <code>script</code></p>
+<h4 id="writing-a-new-format">Writing a new Format</h4>
+<p>If you’d like to write a new format, open a ticket, or speak up on <a href="https://gitter.im/jupyter/nbviewer">gitter</a>! We have some work yet to do to support your next big thing in notebook publishing, and we’d love to hear from you.</p>
+<h2 id="config-file-and-command-line-configuration">Config File and Command Line Configuration</h2>
+<p>NBViewer is configurable using a config file, by default called <code>nbviewer_config.py</code>. You can modify the name and location of the config file that NBViewer looks for using the <code>--config-file</code> command line flag. (The location is always a relative path, i.e. relative to where the command <code>python -m nbviewer</code> is run, and never an absolute path.)</p>
+<p>If you don’t know which attributes of NBViewer you can configure using the config file, run <code>python -m nbviewer --generate-config</code> (or <code>python -m nbviewer --generate-config --config-file="my_custom_name.py"</code>) to write a default config file which has all of the configurable options commented out and set to their default values. To change a configurable option to a new value, uncomment the corresponding line and change the default value to the new value.</p>
+<p>You can also run <code>python -m nbviewer --help-all</code> to see all of the configurable options. This is a more comprehensive version of <code>python -m nbviewer --help</code>, which gives a list of the most common ones along with flags and aliases you can use to set their values temporarily via the command line.</p>
+<p>The config file uses <a href="https://traitlets.readthedocs.io/en/stable/config.html">the standard configuration syntax for Jupyter projects</a>. For example, to configure the default port used to be 9000, add the line <code>c.NBViewer.port = 9000</code> to the config file. If you want to do this just once, you can also run <code>python -m nbviewer --NBViewer.port=9000</code> at the command line. (<code>NBViewer.port</code> also has the alias <code>port</code>, making it also possible to do, in this specific case, <code>python -m nbviewer --port=9000</code>. However not all configurable options have shorthand aliases like this; you can check using the outputs of <code>python -m nbviewer --help</code> and <code>python -m nbviewer --help-all</code> to see which ones do and which ones don’t.)</p>
+<p>One thing this allows you to do, for example, is to write your custom implementations of any of the standard page rendering <a href="https://www.tornadoweb.org/en/stable/guide/structure.html#subclassing-requesthandler">handlers</a> included in NBViewer, e.g. by subclassing the original handlers to include custom logic along with custom output possibilities, and then have these custom handlers always loaded by default, by modifying the corresponding lines in the config file. This is effectively another way to extend NBViewer.</p>
+<h2 id="securing-the-notebook-viewer">Securing the Notebook Viewer</h2>
+<p>You can run the viewer as a <a href="https://jupyterhub.readthedocs.io/en/latest/reference/services.html">JupyterHub 0.7+ service</a>. Running the viewer as a service prevents users who have not authenticated with the Hub from accessing the nbviewer instance. This setup can be useful for protecting access to local notebooks rendered with the <code>--localfiles</code> option.</p>
+<p>Add an entry like the following to your <code>jupyterhub_config.py</code> to have it start nbviewer as a managed service:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>c.JupyterHub.services <span class="op">=</span> [</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>    {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>        <span class="co"># the /services/&lt;name&gt; path for accessing the notebook viewer</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>        <span class="st">&#39;name&#39;</span>: <span class="st">&#39;nbviewer&#39;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>        <span class="co"># the interface and port nbviewer will use</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>        <span class="st">&#39;url&#39;</span>: <span class="st">&#39;http://127.0.0.1:9000&#39;</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>        <span class="co"># the path to nbviewer repo</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>        <span class="st">&#39;cwd&#39;</span>: <span class="st">&#39;&lt;path to repo&gt;&#39;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>        <span class="co"># command to start the nbviewer</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>        <span class="st">&#39;command&#39;</span>: [<span class="st">&#39;python&#39;</span>, <span class="st">&#39;-m&#39;</span>, <span class="st">&#39;nbviewer&#39;</span>]</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>    }</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>]</span></code></pre></div>
+<p>The nbviewer instance will automatically read the <a href="http://jupyterhub.readthedocs.io/en/latest/reference/services.html#launching-a-hub-managed-service">various <code>JUPYTERHUB_*</code> environment variables</a> and configure itself accordingly. You can also run the nbviewer instance as an <a href="http://jupyterhub.readthedocs.io/en/latest/reference/services.html#externally-managed-services">externally managed JupyterHub service</a>, but must set the requisite environment variables yourself.</p>
+<h2 id="sitemap-markdowns">Sitemap Markdowns</h2>
+<ul>
+<li><a href=".github/ISSUE_TEMPLATE/bug_report.md">.github/ISSUE_TEMPLATE/bug_report.md</a></li>
+<li><a href=".github/ISSUE_TEMPLATE/feature_request.md">.github/ISSUE_TEMPLATE/feature_request.md</a></li>
+<li><a href="CONTRIBUTING.md">CONTRIBUTING.md</a></li>
+<li><a href="README.md">README.md</a></li>
+<li><a href="nbviewer/static/img/example-nb/readme.md">nbviewer/static/img/example-nb/readme.md</a></li>
+<li><a href="nbviewer/templates/faq.md">nbviewer/templates/faq.md</a></li>
+<li><a href="statuspage/README.md">statuspage/README.md</a></li>
+</ul>
+<h2 id="sitemap-htmls">Sitemap HTMLs</h2>
+<ul>
+<li>.
+<ul>
+<li><a href="README.md.html">README.md</a></li>
+</ul></li>
+<li>nbviewer/static/img/example-nb
+<ul>
+<li><a href="nbviewer/static/img/example-nb/readme.md.html">readme.md</a></li>
+</ul></li>
+<li>nbviewer/templates
+<ul>
+<li><a href="nbviewer/templates/400.html">400</a></li>
+<li><a href="nbviewer/templates/404.html">404</a></li>
+<li><a href="nbviewer/templates/500.html">500</a></li>
+<li><a href="nbviewer/templates/502.html">502</a></li>
+<li><a href="nbviewer/templates/dirview.html">dirview</a></li>
+<li><a href="nbviewer/templates/error.html">error</a></li>
+</ul></li>
+<li>nbviewer/templates
+<ul>
+<li><a href="nbviewer/templates/index.html">index</a></li>
+<li><a href="nbviewer/templates/layout.html">layout</a></li>
+<li><a href="nbviewer/templates/notebook.html">notebook</a></li>
+<li><a href="nbviewer/templates/popular.html">popular</a></li>
+<li><a href="nbviewer/templates/slow_notebook.html">slow_notebook</a></li>
+<li><a href="nbviewer/templates/tabular.html">tabular</a></li>
+<li><a href="nbviewer/templates/treelist.html">treelist</a></li>
+<li><a href="nbviewer/templates/unknown_filetype.html">unknown_filetype</a></li>
+<li><a href="nbviewer/templates/usergists.html">usergists</a></li>
+<li><a href="nbviewer/templates/userview.html">userview</a></li>
+</ul></li>
+<li>nbviewer/templates/formats
+<ul>
+<li><a href="nbviewer/templates/formats/html.html">html</a></li>
+<li><a href="nbviewer/templates/formats/script.html">script</a></li>
+<li><a href="nbviewer/templates/formats/slides.html">slides</a></li>
+</ul></li>
+<li>nbviewer/tests/templates
+<ul>
+<li><a href="nbviewer/tests/templates/index.html">index</a></li>
+</ul></li>
+<li>statuspage
+<ul>
+<li><a href="statuspage/README.md.html">README.md</a> publish github rate limit remaining to statuspage.io</li>
+</ul></li>
+</ul>
+<h2 id="sitemap-markdowns-1">Sitemap Markdowns</h2>
+<ul>
+<li><a href="README.md">README.md</a></li>
+</ul>
+<h2 id="sitemap-htmls-1">Sitemap HTMLs</h2>
+<ul>
+<li>.
+<ul>
+<li><a href="README.md.html">README.md</a> # Choosing Boxes</li>
+</ul></li>
+</ul>
+<h3 id="problem">Problem</h3>
+<p>The problem “Choosing Boxes” is described in the <a href="https://www.dwavesys.com/media/bu0lh5ee/problem-formulation-guide-2022-01-10.pdf">D-Wave problem formulation guide</a> in chapt. 4.4.</p>
+<details>
+<p><summary> Choosing Boxes Problem </summary></p>
+<h4 id="example-choosing-boxes">Example: Choosing Boxes</h4>
+<p>We’re given three boxes with different weights. We want to choose the two boxes with the smallest sum.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Box 1</th>
+<th>Box 2</th>
+<th>Box 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weight</td>
+<td>15</td>
+<td>20</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<p>This is a simple problem – we know that the answer is to choose boxes 15 and 20. But how do we phrase this problem as a BQM?</p>
+<h5 id="step-1-write-objective-and-constraints">Step 1: Write Objective and Constraints</h5>
+<p><strong>Objective</strong>: We are looking for the smallest sum, so our objective is “minimize the sum of the boxes chosen”.<br />
+<strong>Constraint</strong>: We are allowed to choose two boxes, so our constraint is “choose exactly two boxes”.</p>
+<h5 id="step-2-convert-objective-and-constraints-into-binary-math-expressions">Step 2: Convert Objective and Constraints into Binary Math Expressions</h5>
+<p><strong>Binary Variables.</strong> First, we need to define our binary variables. The answer that we are looking for is which boxes we should choose. For each box, we can ask “do we choose this box?”. This points us to how we should define our binary variables.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Use Box i</th>
+<th>Don’t use Box i</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>QUBO</td>
+<td><span class="math inline"><em>x</em><sub><em>i</em></sub> = 1</span></td>
+<td><span class="math inline"><em>x</em><sub><em>i</em></sub> = 0</span></td>
+</tr>
+<tr class="even">
+<td>Ising</td>
+<td><span class="math inline"><em>s</em><sub><em>i</em></sub> =  + 1</span></td>
+<td><span class="math inline"><em>s</em><sub><em>i</em></sub> =  − 1</span></td>
+</tr>
+</tbody>
+</table>
+<p>Once we have defined our binary variables, we can convert our objective and constraint into math expressions.</p>
+<p><strong>Objective.</strong> We consider our objective for both QUBO and Ising forms.</p>
+<p><strong>QUBO:</strong> To figure out the sum of the boxes that are chosen, we can use a weighted sum: <span class="math inline">15<em>x</em><sub>1</sub> + 20<em>x</em><sub>2</sub> + 25<em>x</em><sub>3</sub></span>. In this sum, the boxes that are chosen will have <span class="math inline"><em>x</em><sub><em>i</em></sub> = 1</span> and the boxes that are not chosen will have <span class="math inline"><em>x</em><sub><em>i</em></sub> = 0</span>. In other words, the value of boxes that are not chosen will be multiplied by zero and so we will only be adding up the value of the boxes that are chosen. Our objective function becomes:</p>
+<p><br /><span class="math display"><em>m</em><em>i</em><em>n</em>(15<em>x</em><sub>1</sub> + 20<em>x</em><sub>2</sub> + 25<em>x</em><sub>3</sub>)</span><br /></p>
+<p><strong>Ising:</strong> Using our binary variables, we can convert our +1/-1 to 1/0 using the Ising to QUBO translation shown earlier, which maps +1 7→ 1 and −1 7→ 0. Our objective function can then be written as:</p>
+<p><br /><span class="math display">$$
+min \left (
+  15 \left ( \frac{s_1 + 1}{2} \right ) +
+  20 \left ( \frac{s_2 + 1}{2} \right ) +
+  25 \left ( \frac{s_3 + 1}{2} \right )
+\right )
+$$</span><br /></p>
+<p><strong>Constraint.</strong> We consider our constraint for both QUBO and Ising forms.</p>
+<p><strong>QUBO:</strong> Our constraint “choose exactly two boxes” means that we need exactly two of our binary variables to have value 1, and the remaining binary variable will have value 0. In other words, our constraint can be written as:</p>
+<p><br /><span class="math display"><em>x</em><sub>1</sub> + <em>x</em><sub>2</sub> + <em>x</em><sub>3</sub> = 2</span><br /></p>
+<p><strong>Ising:</strong> Our constraint “choose exactly two boxes” means that we need exactly two of our binary variables to have value +1, and the remaining binary variable will have value -1. In other words, our constraint can be written as:</p>
+<p><br /><span class="math display"><em>s</em><sub>1</sub> + <em>s</em><sub>2</sub> + <em>s</em><sub>3</sub> = 1</span><br /></p>
+<h5 id="step-3-transform-math-expressions-into-a-bqm">Step 3: Transform Math Expressions into a BQM</h5>
+<p>Our objective function is fine as written, so we only need to modify our constraint.</p>
+<p><strong>QUBO:</strong> To modify our constraint, we need to use the method for equalities. Original constraint: <br /><span class="math display"><em>x</em><sub>1</sub> + <em>x</em><sub>2</sub> + <em>x</em><sub>3</sub> = 2</span><br /> Move everything to one side: <br /><span class="math display"><em>x</em><sub>1</sub> + <em>x</em><sub>2</sub> + <em>x</em><sub>3</sub> − 2 = 0</span><br /> Square the expression: <br /><span class="math display">(<em>x</em><sub>1</sub> + <em>x</em><sub>2</sub> + <em>x</em><sub>3</sub> − 2)<sup>2</sup></span><br /></p>
+<p><strong>Ising:</strong> Following the same method, we can rewrite our constraint as follows. <br /><span class="math display">(<em>s</em><sub>1</sub> + <em>s</em><sub>2</sub> + <em>s</em><sub>3</sub> − 1)<sup>2</sup></span><br /></p>
+<h5 id="step-4-combine-expressions">Step 4: Combine Expressions</h5>
+<p>Now that we have written our objective and constraint in BQM form, we can combine them together to make our final model using addition and adding in a Lagrange parameter. Both of these can be expanded and simplified to prepare for input to an Ocean python program.</p>
+<p><strong>QUBO:</strong> <br /><span class="math display"><em>m</em><em>i</em><em>n</em>((15<em>x</em><sub>1</sub>+20<em>x</em><sub>2</sub>+25<em>x</em><sub>3</sub>)+<em>γ</em>(<em>x</em><sub>1</sub>+<em>x</em><sub>2</sub>+<em>x</em><sub>3</sub>−2)<sup>2</sup>)</span><br /></p>
+<p><strong>Ising:</strong></p>
+<p><br /><span class="math display">$$
+min \left (
+  15 \left ( \frac{s_1 + 1}{2} \right ) +
+  20 \left ( \frac{s_2 + 1}{2} \right ) +
+  25 \left ( \frac{s_3 + 1}{2} \right ) +
+  γ (s_1 + s_2 + s_3 − 1)^2
+\right )
+$$</span><br /></p>
+</details>
+<p>Also see: <a href="https://github.com/dwave-training/choosing-boxes">https://github.com/dwave-training/choosing-boxes</a></p>
+<h3 id="code">Code</h3>
+<p>The code for the problem is in <code>choosing_boxes.ipynb</code> <!-- [choosing_boxes.ipynb](choosing_boxes_problem/choosing_boxes.ipynb) --> which can be viewed at <a href="https://nbviewer.org/github/klezm/QuantumAnnealingPlayground/blob/main/choosing_boxes_problem/choosing_boxes.ipynb">nbviewer.org</a> or opened in the <a href="https://ide.dwavesys.io/#https://github.com/klezm/QuantumAnnealingPlayground">D-Wave Leap IDE</a></p>
+<h3 id="visualization">Visualization</h3>
+<p>The eigenspectrum and eigenvector for this problem are visualized for different Lagrange multipliers γ:</p>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 23%" />
+<col style="width: 4%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th></th>
+<th>50 steps</th>
+<th>100 steps</th>
+<th>200 steps</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Choose 2 out of 3</td>
+<td>Annealing Schedule starting <br> at 0 and ending at 0</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+<tr class="odd">
+<td>Choose 1 out of 2</td>
+<td>Annealing Schedule starting <br> at 0 and ending at 0</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+<tr class="odd">
+<td>Choose 2 out of 4</td>
+<td>Annealing Schedule starting <br> at 0 and ending at 0</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Eigenspectrum</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>Eigenvectors</td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
+</tr>
+</tbody>
+</table>
+<p>Old Plots:</p>
+<ul>
+<li>Choosing Boxes Problem with 3 Boxes (pick 2 with min weight)
+<ul>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums.html">eigenspectrums.html</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums3D.html">eigenspectrums3D.html</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors.html">eigenvectors.html</a></li>
+<li>With 100 Time Steps
+<ul>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt100.html">eigenspectrums</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt100.html">eigenvectors</a></li>
+</ul></li>
+<li>With 200 Time Steps
+<ul>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt200.html">eigenspectrums</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt200.html">eigenvectors</a></li>
+</ul></li>
+</ul></li>
+<li>Choosing Boxes Problem with 2 Boxes (pick the lighter one)
+<ul>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
+</ul></li>
+<li>Choosing Boxes Problem with 4 Boxes (pick 2 with min weight)
+<ul>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
+<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
+</ul></li>
+</ul>
+<h2 id="sitemap-markdowns-2">Sitemap Markdowns</h2>
+<ul>
+<li><a href="README.md">README.md</a></li>
+</ul>
+<h2 id="sitemap-htmls-2">Sitemap HTMLs</h2>
+<ul>
+<li>.
+<ul>
+<li><a href="README.md.html">README.md</a></li>
+<li><a href="choosing_boxes.html">choosing_boxes.ipynb</a></li>
+</ul></li>
+<li>results
+<ul>
+<li><a href="results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
+<li><a href="results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
+<li><a href="results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
+<li><a href="results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenspectrums-dt100.html">eigenspectrums-dt100</a></li>
+<li><a href="results/eigenspectrums-dt200.html">eigenspectrums-dt200</a></li>
+<li><a href="results/eigenspectrums.html">eigenspectrums</a></li>
+<li><a href="results/eigenspectrums3D.html">eigenspectrums3D</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="results/eigenvectors-dt100.html">eigenvectors-dt100</a></li>
+<li><a href="results/eigenvectors-dt200.html">eigenvectors-dt200</a></li>
+<li><a href="results/eigenvectors.html">eigenvectors</a> # QuantumAnnealingPlayground</li>
+</ul></li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="choosing_boxes_problem">choosing_boxes_problem</a>
+<ul>
+<li>Code for the “Choosing Boxes” problem from the <a href="https://www.dwavesys.com/media/bu0lh5ee/problem-formulation-guide-2022-01-10.pdf">D-Wave problem formulation guide</a></li>
+</ul></li>
+<li><a href="playground">playground</a>
+<ul>
+<li>Code for experimenting with the D-Wave system</li>
+</ul></li>
+</ul>
+<h2 id="sitemap-markdowns-3">Sitemap Markdowns</h2>
+<ul>
+<li><a href="README.md">README.md</a></li>
+<li><a href="choosing_boxes_problem/README.md">choosing_boxes_problem/README.md</a></li>
+<li><a href="nbviewer/.github/ISSUE_TEMPLATE/bug_report.md">nbviewer/.github/ISSUE_TEMPLATE/bug_report.md</a></li>
+<li><a href="nbviewer/.github/ISSUE_TEMPLATE/feature_request.md">nbviewer/.github/ISSUE_TEMPLATE/feature_request.md</a></li>
+<li><a href="nbviewer/CONTRIBUTING.md">nbviewer/CONTRIBUTING.md</a></li>
+<li><a href="nbviewer/README.md">nbviewer/README.md</a></li>
+<li><a href="nbviewer/nbviewer/static/img/example-nb/readme.md">nbviewer/nbviewer/static/img/example-nb/readme.md</a></li>
+<li><a href="nbviewer/nbviewer/templates/faq.md">nbviewer/nbviewer/templates/faq.md</a></li>
+<li><a href="nbviewer/statuspage/README.md">nbviewer/statuspage/README.md</a></li>
+</ul>
+<h2 id="sitemap-htmls-3">Sitemap HTMLs</h2>
+<ul>
+<li>.
+<ul>
+<li><a href="README.md.html">README.md</a></li>
+</ul></li>
+<li>choosing_boxes_problem
+<ul>
+<li><a href="choosing_boxes_problem/README.md.html">README.md</a></li>
+<li><a href="choosing_boxes_problem/choosing_boxes.html">choosing_boxes.ipynb</a></li>
+</ul></li>
+<li>choosing_boxes_problem/results
+<ul>
+<li><a href="choosing_boxes_problem/results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
+<li><a href="choosing_boxes_problem/results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
+<li><a href="choosing_boxes_problem/results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
+<li><a href="choosing_boxes_problem/results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-dt100.html">eigenspectrums-dt100</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums-dt200.html">eigenspectrums-dt200</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums.html">eigenspectrums</a></li>
+<li><a href="choosing_boxes_problem/results/eigenspectrums3D.html">eigenspectrums3D</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-dt100.html">eigenvectors-dt100</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors-dt200.html">eigenvectors-dt200</a></li>
+<li><a href="choosing_boxes_problem/results/eigenvectors.html">eigenvectors</a></li>
+</ul></li>
+<li>nbviewer
+<ul>
+<li><a href="nbviewer/README.md.html">README.md</a></li>
+</ul></li>
+<li>nbviewer/nbviewer/static/img/example-nb
+<ul>
+<li><a href="nbviewer/nbviewer/static/img/example-nb/readme.md.html">readme.md</a></li>
+</ul></li>
+<li>nbviewer/nbviewer/templates
+<ul>
+<li><a href="nbviewer/nbviewer/templates/400.html">400</a></li>
+<li><a href="nbviewer/nbviewer/templates/404.html">404</a></li>
+<li><a href="nbviewer/nbviewer/templates/500.html">500</a></li>
+<li><a href="nbviewer/nbviewer/templates/502.html">502</a></li>
+<li><a href="nbviewer/nbviewer/templates/dirview.html">dirview</a></li>
+<li><a href="nbviewer/nbviewer/templates/error.html">error</a></li>
+</ul></li>
+<li>nbviewer/nbviewer/templates
+<ul>
+<li><a href="nbviewer/nbviewer/templates/index.html">index</a></li>
+<li><a href="nbviewer/nbviewer/templates/layout.html">layout</a></li>
+<li><a href="nbviewer/nbviewer/templates/notebook.html">notebook</a></li>
+<li><a href="nbviewer/nbviewer/templates/popular.html">popular</a></li>
+<li><a href="nbviewer/nbviewer/templates/slow_notebook.html">slow_notebook</a></li>
+<li><a href="nbviewer/nbviewer/templates/tabular.html">tabular</a></li>
+<li><a href="nbviewer/nbviewer/templates/treelist.html">treelist</a></li>
+<li><a href="nbviewer/nbviewer/templates/unknown_filetype.html">unknown_filetype</a></li>
+<li><a href="nbviewer/nbviewer/templates/usergists.html">usergists</a></li>
+<li><a href="nbviewer/nbviewer/templates/userview.html">userview</a></li>
+</ul></li>
+<li>nbviewer/nbviewer/templates/formats
+<ul>
+<li><a href="nbviewer/nbviewer/templates/formats/html.html">html</a></li>
+<li><a href="nbviewer/nbviewer/templates/formats/script.html">script</a></li>
+<li><a href="nbviewer/nbviewer/templates/formats/slides.html">slides</a></li>
+</ul></li>
+<li>nbviewer/nbviewer/tests/templates
+<ul>
+<li><a href="nbviewer/nbviewer/tests/templates/index.html">index</a></li>
+</ul></li>
+<li>nbviewer/statuspage
+<ul>
+<li><a href="nbviewer/statuspage/README.md.html">README.md</a></li>
+</ul></li>
+<li>playground
+<ul>
+<li><a href="playground/SudoQ.html">SudoQ.ipynb</a></li>
+</ul></li>
+</ul>
