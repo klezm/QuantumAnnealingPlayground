@@ -1,6 +1,6 @@
 # Choosing Boxes
 
-### Problem
+## Problem
 
 The problem "Choosing Boxes" is described in the
 [D-Wave problem formulation guide](https://www.dwavesys.com/media/bu0lh5ee/problem-formulation-guide-2022-01-10.pdf)
@@ -8,10 +8,10 @@ in chapt. 4.4.
 
 <details>
 <summary>
-Choosing Boxes Problem
+<b><u>Choosing Boxes Problem Example</u></b>
 </summary>
 
-#### Example: Choosing Boxes
+### Example: Choosing Boxes
 
 We're given three boxes with different weights.
 We want to choose the two boxes with the smallest sum.
@@ -23,14 +23,14 @@ We want to choose the two boxes with the smallest sum.
 This is a simple problem – we know that the answer is to choose boxes 15 and 20.
 But how do we phrase this problem as a BQM?
 
-##### Step 1: Write Objective and Constraints
+#### Step 1: Write Objective and Constraints
 
 **Objective**: We are looking for the smallest sum, so our objective is "minimize the sum of
 the boxes chosen".  
 **Constraint**: We are allowed to choose two boxes, so our constraint is "choose exactly two
 boxes".
 
-##### Step 2: Convert Objective and Constraints into Binary Math Expressions
+#### Step 2: Convert Objective and Constraints into Binary Math Expressions
 
 **Binary Variables.** First, we need to define our binary variables.
 The answer that we are looking for is which boxes we should choose.
@@ -82,7 +82,7 @@ In other words, our constraint can be written as:
 
 $$s_1 + s_2 + s_3 = 1$$
 
-##### Step 3: Transform Math Expressions into a BQM
+#### Step 3: Transform Math Expressions into a BQM
 
 Our objective function is fine as written, so we only need to modify our constraint.
 
@@ -99,7 +99,7 @@ $$(x_1 + x_2 + x_3 − 2)^2$$
 Following the same method, we can rewrite our constraint as follows.
 $$(s_1 + s_2 + s_3 − 1)^2$$
 
-##### Step 4: Combine Expressions
+#### Step 4: Combine Expressions
 
 Now that we have written our objective and constraint in BQM form, we can combine them together to make our final model using addition and adding in a Lagrange parameter.
 Both of these can be expanded and simplified to prepare for input to an Ocean python program.
@@ -128,7 +128,7 @@ $$
 Also see:
 [https://github.com/dwave-training/choosing-boxes](https://github.com/dwave-training/choosing-boxes)
 
-### Code
+## Code
 
 The code for the problem is in 
 `choosing_boxes.ipynb` <!-- [choosing_boxes.ipynb](choosing_boxes_problem/choosing_boxes.ipynb) -->
@@ -137,7 +137,7 @@ which can be viewed at
 or opened in the
 [D-Wave Leap IDE](https://ide.dwavesys.io/#https://github.com/klezm/QuantumAnnealingPlayground)
 
-### Visualization
+## Visualization
 
 The eigenspectrum and eigenvector for this problem are visualized for different Lagrange multipliers γ:
 
