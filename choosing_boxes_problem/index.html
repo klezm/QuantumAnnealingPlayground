@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Choosing Boxes</title>
   <link rel="stylesheet" href="../pandoc-theme-jez/theme.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.min.js" type="text/javascript"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 
@@ -20,33 +22,60 @@
     <strong>Contents</strong><label for="contents">⊕</label>
   <input type="checkbox" id="contents">
   <ul>
-  <li><a href="#problem"><span class="toc-section-number">1</span> Problem</a>
+  <li><a href="#problem" id="toc-problem"><span
+  class="toc-section-number">1</span> Problem</a>
   <ul>
-  <li><a href="#example-choosing-boxes"><span class="toc-section-number">1.1</span> Example: Choosing Boxes</a>
+  <li><a href="#example-choosing-boxes"
+  id="toc-example-choosing-boxes"><span
+  class="toc-section-number">1.1</span> Example: Choosing Boxes</a>
   <ul>
-  <li><a href="#step-1-write-objective-and-constraints"><span class="toc-section-number">1.1.1</span> Step 1: Write Objective and Constraints</a></li>
-  <li><a href="#step-2-convert-objective-and-constraints-into-binary-math-expressions"><span class="toc-section-number">1.1.2</span> Step 2: Convert Objective and Constraints into Binary Math Expressions</a></li>
-  <li><a href="#step-3-transform-math-expressions-into-a-bqm"><span class="toc-section-number">1.1.3</span> Step 3: Transform Math Expressions into a BQM</a></li>
-  <li><a href="#step-4-combine-expressions"><span class="toc-section-number">1.1.4</span> Step 4: Combine Expressions</a></li>
+  <li><a href="#step-1-write-objective-and-constraints"
+  id="toc-step-1-write-objective-and-constraints"><span
+  class="toc-section-number">1.1.1</span> Step 1: Write Objective and
+  Constraints</a></li>
+  <li><a
+  href="#step-2-convert-objective-and-constraints-into-binary-math-expressions"
+  id="toc-step-2-convert-objective-and-constraints-into-binary-math-expressions"><span
+  class="toc-section-number">1.1.2</span> Step 2: Convert Objective and
+  Constraints into Binary Math Expressions</a></li>
+  <li><a href="#step-3-transform-math-expressions-into-a-bqm"
+  id="toc-step-3-transform-math-expressions-into-a-bqm"><span
+  class="toc-section-number">1.1.3</span> Step 3: Transform Math
+  Expressions into a BQM</a></li>
+  <li><a href="#step-4-combine-expressions"
+  id="toc-step-4-combine-expressions"><span
+  class="toc-section-number">1.1.4</span> Step 4: Combine
+  Expressions</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#code"><span class="toc-section-number">2</span> Code</a></li>
-  <li><a href="#visualization"><span class="toc-section-number">3</span> Visualization</a></li>
-  <li><a href="#sitemap-markdowns"><span class="toc-section-number">4</span> Sitemap Markdowns</a></li>
-  <li><a href="#sitemap-htmls"><span class="toc-section-number">5</span> Sitemap HTMLs</a></li>
+  <li><a href="#code" id="toc-code"><span
+  class="toc-section-number">2</span> Code</a></li>
+  <li><a href="#visualization" id="toc-visualization"><span
+  class="toc-section-number">3</span> Visualization</a></li>
+  <li><a href="#sitemap-markdowns" id="toc-sitemap-markdowns"><span
+  class="toc-section-number">4</span> Sitemap Markdowns</a></li>
+  <li><a href="#sitemap-htmls" id="toc-sitemap-htmls"><span
+  class="toc-section-number">5</span> Sitemap HTMLs</a></li>
   </ul>
 </nav>
 
 <main>
-<h1 data-number="1" id="problem"><span class="header-section-number">1</span> Problem</h1>
-<p>The problem “Choosing Boxes” is described in the <a href="https://www.dwavesys.com/media/bu0lh5ee/problem-formulation-guide-2022-01-10.pdf">D-Wave problem formulation guide</a> in chapt. 4.4.</p>
+<h1 data-number="1" id="problem"><span
+class="header-section-number">1</span> Problem</h1>
+<p>The problem “Choosing Boxes” is described in the <a
+href="https://www.dwavesys.com/media/bu0lh5ee/problem-formulation-guide-2022-01-10.pdf">D-Wave
+problem formulation guide</a> in chapt. 4.4.</p>
 <details>
-<p><summary> <b><u>Choosing Boxes Problem Example</u></b> </summary></p>
-<h2 data-number="1.1" id="example-choosing-boxes"><span class="header-section-number">1.1</span> Example: Choosing Boxes</h2>
-<p>We’re given three boxes with different weights. We want to choose the two boxes with the smallest sum.</p>
+<summary>
+<b><u>Choosing Boxes Problem Example</u></b>
+</summary>
+<h2 data-number="1.1" id="example-choosing-boxes"><span
+class="header-section-number">1.1</span> Example: Choosing Boxes</h2>
+<p>We’re given three boxes with different weights. We want to choose the
+two boxes with the smallest sum.</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th></th>
 <th>Box 1</th>
 <th>Box 2</th>
@@ -54,7 +83,7 @@
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Weight</td>
 <td>15</td>
 <td>20</td>
@@ -62,40 +91,64 @@
 </tr>
 </tbody>
 </table>
-<p>This is a simple problem – we know that the answer is to choose boxes 15 and 20. But how do we phrase this problem as a BQM?</p>
-<h3 data-number="1.1.1" id="step-1-write-objective-and-constraints"><span class="header-section-number">1.1.1</span> Step 1: Write Objective and Constraints</h3>
-<p><strong>Objective</strong>: We are looking for the smallest sum, so our objective is “minimize the sum of the boxes chosen”.<br />
-<strong>Constraint</strong>: We are allowed to choose two boxes, so our constraint is “choose exactly two boxes”.</p>
-<h3 data-number="1.1.2" id="step-2-convert-objective-and-constraints-into-binary-math-expressions"><span class="header-section-number">1.1.2</span> Step 2: Convert Objective and Constraints into Binary Math Expressions</h3>
-<p><strong>Binary Variables.</strong> First, we need to define our binary variables. The answer that we are looking for is which boxes we should choose. For each box, we can ask “do we choose this box?”. This points us to how we should define our binary variables.</p>
+<p>This is a simple problem – we know that the answer is to choose boxes
+15 and 20. But how do we phrase this problem as a BQM?</p>
+<h3 data-number="1.1.1"
+id="step-1-write-objective-and-constraints"><span
+class="header-section-number">1.1.1</span> Step 1: Write Objective and
+Constraints</h3>
+<p><strong>Objective</strong>: We are looking for the smallest sum, so
+our objective is “minimize the sum of the boxes chosen”.<br />
+<strong>Constraint</strong>: We are allowed to choose two boxes, so our
+constraint is “choose exactly two boxes”.</p>
+<h3 data-number="1.1.2"
+id="step-2-convert-objective-and-constraints-into-binary-math-expressions"><span
+class="header-section-number">1.1.2</span> Step 2: Convert Objective and
+Constraints into Binary Math Expressions</h3>
+<p><strong>Binary Variables.</strong> First, we need to define our
+binary variables. The answer that we are looking for is which boxes we
+should choose. For each box, we can ask “do we choose this box?”. This
+points us to how we should define our binary variables.</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th></th>
 <th>Use Box i</th>
 <th>Don’t use Box i</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>QUBO</td>
 <td><span class="math inline">\(x_i = 1\)</span></td>
 <td><span class="math inline">\(x_i = 0\)</span></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Ising</td>
 <td><span class="math inline">\(s_i = +1\)</span></td>
 <td><span class="math inline">\(s_i = −1\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Once we have defined our binary variables, we can convert our objective and constraint into math expressions.</p>
-<p><strong>Objective.</strong> We consider our objective for both QUBO and Ising forms.</p>
-<p><strong>QUBO:</strong> To figure out the sum of the boxes that are chosen, we can use a weighted sum: <span class="math inline">\(15x_1 + 20x_2 + 25x_3\)</span>. In this sum, the boxes that are chosen will have <span class="math inline">\(x_i = 1\)</span> and the boxes that are not chosen will have <span class="math inline">\(x_i = 0\)</span>. In other words, the value of boxes that are not chosen will be multiplied by zero and so we will only be adding up the value of the boxes that are chosen. Our objective function becomes:</p>
+<p>Once we have defined our binary variables, we can convert our
+objective and constraint into math expressions.</p>
+<p><strong>Objective.</strong> We consider our objective for both QUBO
+and Ising forms.</p>
+<p><strong>QUBO:</strong> To figure out the sum of the boxes that are
+chosen, we can use a weighted sum: <span class="math inline">\(15x_1 +
+20x_2 + 25x_3\)</span>. In this sum, the boxes that are chosen will have
+<span class="math inline">\(x_i = 1\)</span> and the boxes that are not
+chosen will have <span class="math inline">\(x_i = 0\)</span>. In other
+words, the value of boxes that are not chosen will be multiplied by zero
+and so we will only be adding up the value of the boxes that are chosen.
+Our objective function becomes:</p>
 <p><span class="math display">\[
 min(15x_1 + 20x_2 + 25x_3)
 \]</span></p>
-<p><strong>Ising:</strong> Using our binary variables, we can convert our +1/-1 to 1/0 using the Ising to QUBO translation shown earlier, which maps +1 7→ 1 and −1 7→ 0. Our objective function can then be written as:</p>
+<p><strong>Ising:</strong> Using our binary variables, we can convert
+our +1/-1 to 1/0 using the Ising to QUBO translation shown earlier,
+which maps +1 7→ 1 and −1 7→ 0. Our objective function can then be
+written as:</p>
 <p><span class="math display">\[
 min \left (
   15 \left ( \frac{s_1 + 1}{2} \right ) +
@@ -103,17 +156,40 @@ min \left (
   25 \left ( \frac{s_3 + 1}{2} \right )
 \right )
 \]</span></p>
-<p><strong>Constraint.</strong> We consider our constraint for both QUBO and Ising forms.</p>
-<p><strong>QUBO:</strong> Our constraint “choose exactly two boxes” means that we need exactly two of our binary variables to have value 1, and the remaining binary variable will have value 0. In other words, our constraint can be written as:</p>
+<p><strong>Constraint.</strong> We consider our constraint for both QUBO
+and Ising forms.</p>
+<p><strong>QUBO:</strong> Our constraint “choose exactly two boxes”
+means that we need exactly two of our binary variables to have value 1,
+and the remaining binary variable will have value 0. In other words, our
+constraint can be written as:</p>
 <p><span class="math display">\[x_1 + x_2 + x_3 = 2\]</span></p>
-<p><strong>Ising:</strong> Our constraint “choose exactly two boxes” means that we need exactly two of our binary variables to have value +1, and the remaining binary variable will have value -1. In other words, our constraint can be written as:</p>
+<p><strong>Ising:</strong> Our constraint “choose exactly two boxes”
+means that we need exactly two of our binary variables to have value +1,
+and the remaining binary variable will have value -1. In other words,
+our constraint can be written as:</p>
 <p><span class="math display">\[s_1 + s_2 + s_3 = 1\]</span></p>
-<h3 data-number="1.1.3" id="step-3-transform-math-expressions-into-a-bqm"><span class="header-section-number">1.1.3</span> Step 3: Transform Math Expressions into a BQM</h3>
-<p>Our objective function is fine as written, so we only need to modify our constraint.</p>
-<p><strong>QUBO:</strong> To modify our constraint, we need to use the method for equalities. Original constraint: <span class="math display">\[x_1 + x_2 + x_3 = 2\]</span> Move everything to one side: <span class="math display">\[x_1 + x_2 + x_3 − 2 = 0\]</span> Square the expression: <span class="math display">\[(x_1 + x_2 + x_3 − 2)^2\]</span></p>
-<p><strong>Ising:</strong> Following the same method, we can rewrite our constraint as follows. <span class="math display">\[(s_1 + s_2 + s_3 − 1)^2\]</span></p>
-<h3 data-number="1.1.4" id="step-4-combine-expressions"><span class="header-section-number">1.1.4</span> Step 4: Combine Expressions</h3>
-<p>Now that we have written our objective and constraint in BQM form, we can combine them together to make our final model using addition and adding in a Lagrange parameter. Both of these can be expanded and simplified to prepare for input to an Ocean python program.</p>
+<h3 data-number="1.1.3"
+id="step-3-transform-math-expressions-into-a-bqm"><span
+class="header-section-number">1.1.3</span> Step 3: Transform Math
+Expressions into a BQM</h3>
+<p>Our objective function is fine as written, so we only need to modify
+our constraint.</p>
+<p><strong>QUBO:</strong> To modify our constraint, we need to use the
+method for equalities. Original constraint: <span
+class="math display">\[x_1 + x_2 + x_3 = 2\]</span> Move everything to
+one side: <span class="math display">\[x_1 + x_2 + x_3 − 2 = 0\]</span>
+Square the expression: <span class="math display">\[(x_1 + x_2 + x_3 −
+2)^2\]</span></p>
+<p><strong>Ising:</strong> Following the same method, we can rewrite our
+constraint as follows. <span class="math display">\[(s_1 + s_2 + s_3 −
+1)^2\]</span></p>
+<h3 data-number="1.1.4" id="step-4-combine-expressions"><span
+class="header-section-number">1.1.4</span> Step 4: Combine
+Expressions</h3>
+<p>Now that we have written our objective and constraint in BQM form, we
+can combine them together to make our final model using addition and
+adding in a Lagrange parameter. Both of these can be expanded and
+simplified to prepare for input to an Ocean python program.</p>
 <p><strong>QUBO:</strong> <span class="math display">\[
 min \left (
   (15 x_1 + 20 x_2 + 25 x_3) +
@@ -130,11 +206,21 @@ min \left (
 \right )
 \]</span></p>
 </details>
-<p>Also see: <a href="https://github.com/dwave-training/choosing-boxes">https://github.com/dwave-training/choosing-boxes</a></p>
-<h1 data-number="2" id="code"><span class="header-section-number">2</span> Code</h1>
-<p>The code for the problem is in <code>choosing_boxes.ipynb</code> <!-- [choosing_boxes.ipynb](choosing_boxes_problem/choosing_boxes.ipynb) --> which can be viewed at <a href="https://nbviewer.org/github/klezm/QuantumAnnealingPlayground/blob/main/choosing_boxes_problem/choosing_boxes.ipynb">nbviewer.org</a> or opened in the <a href="https://ide.dwavesys.io/#https://github.com/klezm/QuantumAnnealingPlayground">D-Wave Leap IDE</a></p>
-<h1 data-number="3" id="visualization"><span class="header-section-number">3</span> Visualization</h1>
-<p>The eigenspectrum and eigenvector for this problem are visualized for different Lagrange multipliers γ:</p>
+<p>Also see: <a
+href="https://github.com/dwave-training/choosing-boxes">https://github.com/dwave-training/choosing-boxes</a></p>
+<h1 data-number="2" id="code"><span
+class="header-section-number">2</span> Code</h1>
+<p>The code for the problem is in <code>choosing_boxes.ipynb</code>
+<!-- [choosing_boxes.ipynb](choosing_boxes_problem/choosing_boxes.ipynb) -->
+which can be viewed at <a
+href="https://nbviewer.org/github/klezm/QuantumAnnealingPlayground/blob/main/choosing_boxes_problem/choosing_boxes.ipynb">nbviewer.org</a>
+or opened in the <a
+href="https://ide.dwavesys.io/#https://github.com/klezm/QuantumAnnealingPlayground">D-Wave
+Leap IDE</a></p>
+<h1 data-number="3" id="visualization"><span
+class="header-section-number">3</span> Visualization</h1>
+<p>The eigenspectrum and eigenvector for this problem are visualized for
+different Lagrange multipliers γ:</p>
 <table>
 <colgroup>
 <col style="width: 6%" />
@@ -145,7 +231,7 @@ min \left (
 <col style="width: 21%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th></th>
 <th></th>
 <th></th>
@@ -155,101 +241,140 @@ min \left (
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Choose 2 out of 3</td>
 <td>Annealing Schedule starting <br> at 0 and ending at 0</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td></td>
-<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like
+D-Wave)</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Choose 1 out of 2</td>
 <td>Annealing Schedule starting <br> at 0 and ending at 0</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td></td>
-<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like
+D-Wave)</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Choose 2 out of 4</td>
 <td>Annealing Schedule starting <br> at 0 and ending at 0</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">link</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td></td>
-<td>Annealing Schedule starting <br> above 0 and ending at 0 (like D-Wave)</td>
+<td>Annealing Schedule starting <br> above 0 and ending at 0 (like
+D-Wave)</td>
 <td>Eigenspectrum</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td>Eigenvectors</td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
-<td><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">link</a></td>
+<td><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">link</a></td>
 </tr>
 </tbody>
 </table>
@@ -257,36 +382,49 @@ min \left (
 <ul>
 <li>Choosing Boxes Problem with 3 Boxes (pick 2 with min weight)
 <ul>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums.html">eigenspectrums.html</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums3D.html">eigenspectrums3D.html</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors.html">eigenvectors.html</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums.html">eigenspectrums.html</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums3D.html">eigenspectrums3D.html</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors.html">eigenvectors.html</a></li>
 <li>With 100 Time Steps
 <ul>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt100.html">eigenspectrums</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt100.html">eigenvectors</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt100.html">eigenspectrums</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt100.html">eigenvectors</a></li>
 </ul></li>
 <li>With 200 Time Steps
 <ul>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt200.html">eigenspectrums</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt200.html">eigenvectors</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenspectrums-dt200.html">eigenspectrums</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/eigenvectors-dt200.html">eigenvectors</a></li>
 </ul></li>
 </ul></li>
 <li>Choosing Boxes Problem with 2 Boxes (pick the lighter one)
 <ul>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
 </ul></li>
 <li>Choosing Boxes Problem with 4 Boxes (pick 2 with min weight)
 <ul>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
-<li><a href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
+<li><a
+href="https://klezm.github.io/QuantumAnnealingPlayground/choosing_boxes_problem/results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
 </ul></li>
 </ul>
-<h1 data-number="4" id="sitemap-markdowns"><span class="header-section-number">4</span> Sitemap Markdowns</h1>
+<h1 data-number="4" id="sitemap-markdowns"><span
+class="header-section-number">4</span> Sitemap Markdowns</h1>
 <ul>
 <li><a href="index.html">README.md</a></li>
 </ul>
-<h1 data-number="5" id="sitemap-htmls"><span class="header-section-number">5</span> Sitemap HTMLs</h1>
+<h1 data-number="5" id="sitemap-htmls"><span
+class="header-section-number">5</span> Sitemap HTMLs</h1>
 <ul>
 <li>.
 <ul>
@@ -294,52 +432,96 @@ min \left (
 </ul></li>
 <li>results
 <ul>
-<li><a href="results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
-<li><a href="results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
-<li><a href="results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
-<li><a href="results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenspectrums-dt100.html">eigenspectrums-dt100</a></li>
-<li><a href="results/eigenspectrums-dt200.html">eigenspectrums-dt200</a></li>
+<li><a
+href="results/choosing-boxes-2-eigenspectrums-dt50.html">choosing-boxes-2-eigenspectrums-dt50</a></li>
+<li><a
+href="results/choosing-boxes-2-eigenvectors-dt50.html">choosing-boxes-2-eigenvectors-dt50</a></li>
+<li><a
+href="results/choosing-boxes-4-eigenspectrums-dt50.html">choosing-boxes-4-eigenspectrums-dt50</a></li>
+<li><a
+href="results/choosing-boxes-4-eigenvectors-dt50.html">choosing-boxes-4-eigenvectors-dt50</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenspectrums-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenspectrums-dt100.html">eigenspectrums-dt100</a></li>
+<li><a
+href="results/eigenspectrums-dt200.html">eigenspectrums-dt200</a></li>
 <li><a href="results/eigenspectrums.html">eigenspectrums</a></li>
 <li><a href="results/eigenspectrums3D.html">eigenspectrums3D</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
-<li><a href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
-<li><a href="results/eigenvectors-dt100.html">eigenvectors-dt100</a></li>
-<li><a href="results/eigenvectors-dt200.html">eigenvectors-dt200</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of2_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of3_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt100_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt200_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-approx</a></li>
+<li><a
+href="results/eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar.html">eigenvectors-choose-2of4_γ5-80_Δt50_sched-similar</a></li>
+<li><a
+href="results/eigenvectors-dt100.html">eigenvectors-dt100</a></li>
+<li><a
+href="results/eigenvectors-dt200.html">eigenvectors-dt200</a></li>
 <li><a href="results/eigenvectors.html">eigenvectors</a></li>
 </ul></li>
 </ul>
